@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.boondog.circulartetris.CircularTetris;
+import com.boondog.circulartetris.controls.Controller;
 import com.boondog.circulartetris.model.Block;
+import com.boondog.circulartetris.model.Game;
 import com.boondog.circulartetris.render.MyShapeRenderer;
 
 public class GameScreen implements Screen {
@@ -15,24 +17,25 @@ public class GameScreen implements Screen {
 	OrthographicCamera cam;
 	MyShapeRenderer rend;
 	Vector2 center = new Vector2(0,0);
-	
-	Block b1;
-
+	Game game = new Game();
+	Controller control = new Controller(game);
 	
 	public GameScreen(CircularTetris app) {
 		this.app = app;
-		cam = new OrthographicCamera(app.worldWidth, app.worldHeight);
+		cam = new OrthographicCamera(CircularTetris.worldWidth, CircularTetris.worldHeight);
 		rend = new MyShapeRenderer();
 		rend.setCamera(cam);
-		b1 = new Block(0,300);
+		Gdx.input.setInputProcessor(control);
 	}
 	
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		b1.rotate(1);
-		rend.drawArc(center, b1.getRotation() - Block.blockWidth/2, b1.getRotation() + Block.blockWidth/2, b1.getPosition(), Block.blockHeight, Color.RED, 30);
+
+		for (Block b : game.getCenter()) {
+			rend.drawArc(center, b.getRotation() - CircularTetris.blockWidth/2, b.getRotation() + CircularTetris.blockWidth/2, b.getPosition(), Block.blockHeight, b.getColor(), 30);		
+		}
 
 	}
 
